@@ -4,73 +4,91 @@ stages:
     cmd: python3 src/ingest.py
     deps:
     - path: src/ingest.py
-      md5: 21c5e62fa0fcd74943c8b1c36dfc081e
-      size: 615
+      md5: 11f2c791d421cf2ca7beda3b99798aa5
+      size: 614
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 1
     outs:
     - path: data/prepared
-      md5: 71d6409b1e4cc58abcfd977601796365.dir
-      size: 805019
-      nfiles: 20
+      md5: 3df7dc0e97e16a2dbfb0919613aaf1b2.dir
+      size: 6967445
+      nfiles: 256
   predict:
     cmd: python3 src/predict.py data/prepared data/predictions data/store
     deps:
     - path: data/prepared
-      md5: 71d6409b1e4cc58abcfd977601796365.dir
-      size: 805019
-      nfiles: 20
+      md5: f6eb12166cd084b26e83dd52d2b827ef.dir
+      size: 533971
+      nfiles: 10
     - path: src/predict.py
       md5: a0879833f39778bd56830e837a7c1007
       size: 2215
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 1
     outs:
     - path: data/predictions
-      md5: cf841d9a3a1d0a55ebc45bbc0b1c4f28.dir
-      size: 2374
+      md5: 9a6564485e70e293a939edb530bd46e7.dir
+      size: 1466
       nfiles: 1
   transform:
     cmd: python3 src/transform.py data/prepared data/transformed
     deps:
     - path: data/prepared
-      md5: 71d6409b1e4cc58abcfd977601796365.dir
-      size: 805019
-      nfiles: 20
+      md5: f6eb12166cd084b26e83dd52d2b827ef.dir
+      size: 533971
+      nfiles: 10
     - path: src/transform.py
       md5: 1ef7d77a46b77b0929aad454bcf7d721
       size: 2419
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 1
     outs:
     - path: data/transformed
-      md5: 29152de1cc3a7a1d84b4b0e8967aefa6.dir
-      size: 2432
+      md5: cd6a21d05f1d0c73b60d34d15a1fe584.dir
+      size: 1751
       nfiles: 1
   evaluate:
     cmd: python3 src/evaluate.py data/prepared data/transformed data/predictions data/evaluated
       data/store
     deps:
     - path: data/predictions
-      md5: cf841d9a3a1d0a55ebc45bbc0b1c4f28.dir
-      size: 2374
+      md5: 9a6564485e70e293a939edb530bd46e7.dir
+      size: 1466
       nfiles: 1
     - path: data/prepared
-      md5: 71d6409b1e4cc58abcfd977601796365.dir
-      size: 805019
-      nfiles: 20
+      md5: f6eb12166cd084b26e83dd52d2b827ef.dir
+      size: 533971
+      nfiles: 10
     - path: data/transformed
-      md5: 29152de1cc3a7a1d84b4b0e8967aefa6.dir
-      size: 2432
+      md5: cd6a21d05f1d0c73b60d34d15a1fe584.dir
+      size: 1751
       nfiles: 1
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 1
     outs:
     - path: data/evaluated
-      md5: ce16fe40159574e1c82c7436f228e3e6.dir
-      size: 853125
-      nfiles: 10
+      md5: 6597630622cf7ddd531bc0a2d1d3bcfa.dir
+      size: 560713
+      nfiles: 5
+  train:
+    cmd: python3 src/train.py data/trained
+    deps:
+    - path: data/prepared
+      md5: 3df7dc0e97e16a2dbfb0919613aaf1b2.dir
+      size: 6967445
+      nfiles: 256
+    - path: src/train.py
+      md5: 266947052284df6f4efcc1d087a2227a
+      size: 491
+    params:
+      params.yaml:
+        ingest.dcount: 1
+    outs:
+    - path: data/trained
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0

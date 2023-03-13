@@ -88,6 +88,7 @@ soupsieve==2.3.2.post1
 stack-data==0.3.0
 streamlit==1.11.0
 terminado==0.15.0
+tensorboard>=2.4.1
 tinycss2==1.1.1
 toml==0.10.2
 toolz==0.12.0
