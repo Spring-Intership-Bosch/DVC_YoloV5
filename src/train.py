@@ -1,20 +1,32 @@
 import sys
 import os
 import yaml
+import extras.logger as logg
+
 sys.path.insert(0, 'model/yolov5')
 import train
 
-if len(sys.argv) != 2:
+if len(sys.argv) != 4:
     sys.stderr.write('Arguments error. Usage:\n')
     sys.stderr.write(
-        '\tpython3 src/train.py data/trained\n'
+        '\tpython3 src/train.py data/split data/trained data/augmented\n'
     )
     sys.exit(1)
 
-params = yaml.safe_load(open('params.yaml'))['ingest']
+def yolov5Model():
+    args = {k:v for e in params['yolov5'] for (k,v) in e.items()}
+    logger.info('TRAINING')
+    train.run(data='person.yaml', imgsz=640, **args)
+    logger.info('TRAINING COMPLETED')
 
-output = os.path.join(sys.argv[1],f"v{params['dcount']}",'images')
-os.makedirs(output, exist_ok=True)
+def main():
+    if params['model'] == 'yolov5':
+        yolov5Model()
 
 
-train.run(data='coco128.yaml', imgsz=320, weights='yolov5m.pt', epochs=1, batch=16)
+if __name__ == "__main__":
+    logger = logg.log("train.py")
+    params = yaml.safe_load(open('params.yaml'))
+    output = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images')
+    os.makedirs(output, exist_ok=True)
+    main()

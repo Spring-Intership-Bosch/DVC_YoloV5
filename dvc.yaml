@@ -8,15 +8,46 @@ stages:
     outs:
     - data/prepared
   
-  train:
-    cmd: python3 src/train.py data/trained
+  split:
+    cmd: python3 src/split.py data/prepared data/split
     deps:
-    - src/train.py
+    - src/split.py
     - data/prepared
     params:
     - ingest.dcount
     outs:
+    - data/split
+  
+  augment:
+    cmd: python3 src/augment.py data/split data/augmented
+    deps:
+    - src/augment.py
+    - data/split
+    params:
+    - ingest.dcount
+    outs:
+    - data/augmented
+  
+  train:
+    cmd: python3 src/train.py data/split data/trained data/augmented
+    deps:
+    - src/train.py
+    - data/split
+    - data/augmented
+    params:
+    - ingest.dcount
+    outs:
     - data/trained
+  
+  predict:
+    cmd: python3 src/predict.py data/split data/predicted data/split
+    deps:
+    - src/predict.py
+    - data/split
+    params:
+    - ingest.dcount
+    outs:
+    - data/predicted
 
   # transform:
   #   cmd: python3 src/transform.py data/prepared data/transformed
