@@ -1,3 +1,5 @@
+model : yolov5
+
 ingest:
   dcount: 1
 

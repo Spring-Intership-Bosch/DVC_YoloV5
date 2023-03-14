@@ -10,7 +10,6 @@ import os
 from PIL import Image
 import albumentations as A
 from tqdm import tqdm
-import progressbar
 from progress.bar import Bar
 
 if len(sys.argv) != 3:
@@ -122,22 +121,29 @@ def convert_yolov5_to_dataFrame(annot_path):
     return aug_df
 
 
-    return 
-
+def yolov5Model():
+    image_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","images","train")
+    annot_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","labels","train")
+    txt_dataframe = convert_yolov5_to_dataFrame(annot_path)
+    #Augmentations
+    #Store augmentations in Train folder
+    augmentation(image_path,annot_path,txt_dataframe,image_path,annot_path)
 
 def main():
 
-    params = yaml.safe_load(open('params.yaml'))
+    
     print("-------------------------------")
     print("Augmenting.....")
     print("-------------------------------")
     
     #Input path DIRS
-    image_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","images","train")
-    annot_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","labels","train")
-    txt_dataframe = convert_yolov5_to_dataFrame(annot_path)
-    print(txt_dataframe)
+    if params['model'] == 'yolov5':
+        yolov5Model()
+    
+    
 
+if __name__ == "__main__":
+    params = yaml.safe_load(open('params.yaml'))
     outputaug = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}")
     os.makedirs(outputaug, exist_ok = True)
 
@@ -146,13 +152,7 @@ def main():
     output_annot_path = os.path.join(outputaug,'labels')
     os.makedirs(output_image_path,exist_ok= True)
     os.makedirs(output_annot_path,exist_ok=True)
-
-    #Augmentations
-    #Store augmentations in Train folder
-    augmentation(image_path,annot_path,txt_dataframe,image_path,annot_path)
     
-
-if __name__ == "__main__":
     main()
 
 

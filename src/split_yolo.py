@@ -42,18 +42,12 @@
 
 
 
-import torch
-from IPython.display import Image  # for displaying images
 import os 
 import random
 import shutil
 from sklearn.model_selection import train_test_split
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
 from tqdm import tqdm
-from PIL import Image, ImageDraw
-import numpy as np
-import matplotlib.pyplot as plt
 import yaml
 import sys
 
@@ -66,8 +60,8 @@ if len(sys.argv) != 3:
 
 random.seed(108)
 
-class_name_to_id_mapping = {"person-like": 0,
-                           "person": 1}
+# class_name_to_id_mapping = {"person-like": 0,
+#                            "person": 1}
 
 
 def extract_info_from_xml(xml_file):
@@ -143,15 +137,6 @@ def convert_to_yolov5(info_dict,annot_path,class_name_to_id_mapping):
 
 
 
-
-# random.seed(0)
-
-# class_id_to_name_mapping = dict(zip(class_name_to_id_mapping.values(), class_name_to_id_mapping.keys()))
-
-
-# Split the dataset into train-valid-test splits 
-
-
 def move_files_to_folder(list_of_files, destination_folder):
     for f in list_of_files:
         try:
@@ -162,19 +147,15 @@ def move_files_to_folder(list_of_files, destination_folder):
 
 # Move the splits into their folders
 
-
-def main():
-
-
-    
-    class_name_to_id_mapping = {}
-    
-    
-    params = yaml.safe_load(open('params.yaml'))
+def class_id_mapping():
     class_ids = params['class_id']
+    name_to_id = {}
     for id in class_ids.keys():
-        class_name_to_id_mapping[id] = class_ids[id]
-    print(class_name_to_id_mapping)
+        name_to_id[id] = class_ids[id]
+    
+    return name_to_id
+
+def convert_and_save_annotations(class_name_to_id_mapping):
     input_path = sys.argv[1]
     annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations') )if x[-3:] == "xml"]
     annotations.sort()
@@ -186,18 +167,12 @@ def main():
     for ann in tqdm(annotations):
         info_dict = extract_info_from_xml(ann)
         convert_to_yolov5(info_dict,annot_path,class_name_to_id_mapping)
-    #annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations')) if x[-3:] == "txt"]
-
-    images = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'images', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'images'))]
-    annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations')) if x[-3:] == "txt"]
-
-    images.sort()
-    annotations.sort()
-
-    train_images, val_images, train_annotations, val_annotations = train_test_split(images, annotations, test_size = 0.1, random_state = 1)
-    
 
 
+    return input_path
+
+
+def split_and_save(t_img,t_annot,v_img,v_annot):
     split_train_image_path = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images','train')
     split_train_annot_path = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'labels','train')
     split_val_image_path = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images','val')
@@ -206,15 +181,44 @@ def main():
     os.makedirs(split_train_image_path,exist_ok=True)
     os.makedirs(split_val_image_path,exist_ok=True)
     os.makedirs(split_val_annot_path,exist_ok=True)
-    move_files_to_folder(train_images, split_train_image_path)
-    move_files_to_folder(val_images, split_val_image_path)
-    move_files_to_folder(train_annotations, split_train_annot_path)
-    move_files_to_folder(val_annotations, split_val_annot_path)
+    move_files_to_folder(t_img, split_train_image_path)
+    move_files_to_folder(v_img, split_val_image_path)
+    move_files_to_folder(t_annot, split_train_annot_path)
+    move_files_to_folder(v_annot, split_val_annot_path)
+
+    return
+
+def get_img_annots(input_path):
+    images = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'images', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'images'))]
+    annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations')) if x[-3:] == "txt"]
+    return images,annotations
+
+
+def yolov5Model():
+    class_name_to_id_mapping = class_id_mapping()
+    #Get input Path with conversion
+    input_path = convert_and_save_annotations(class_name_to_id_mapping)
+    #Get images and annotations path
+    images, annotations = get_img_annots(input_path)
+    images.sort()
+    annotations.sort()
+
+    train_images, val_images, train_annotations, val_annotations = train_test_split(images, annotations, test_size = 0.1, random_state = 1)
+    split_and_save(train_images,train_annotations,val_images,val_annotations)
 
 
 
+
+def main():
+    print("-------------------------------")
+    print("Splitting.....")
+    print("-------------------------------")
+
+    if params['model'] == 'yolov5':
+        yolov5Model()
+    
 
 
 if __name__ == '__main__':
-
+    params = yaml.safe_load(open('params.yaml'))
     main()
