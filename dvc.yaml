@@ -8,11 +8,33 @@ stages:
     outs:
     - data/prepared
   
+  split:
+    cmd: python3 src/split_yolo.py data/prepared data/split
+    deps:
+    - src/split_yolo.py
+    - data/prepared
+    params:
+    - ingest.dcount
+    outs:
+    - data/split
+
+  augment:
+    cmd: python3 src/augment_yolo.py data/split data/augmented
+    deps:
+    - src/augment_yolo.py
+    - data/split
+    params:
+    - ingest.dcount
+    outs:
+    - data/augmented
+
+
   train:
-    cmd: python3 src/train.py data/trained
+    cmd: python3 src/train.py data/split data/trained data/augmented
     deps:
     - src/train.py
-    - data/prepared
+    - data/split
+    - data/augmented
     params:
     - ingest.dcount
     outs:

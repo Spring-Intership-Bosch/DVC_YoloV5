@@ -11,9 +11,9 @@ stages:
         ingest.dcount: 1
     outs:
     - path: data/prepared
-      md5: 3df7dc0e97e16a2dbfb0919613aaf1b2.dir
-      size: 6967445
-      nfiles: 256
+      md5: 4d79ebfa4b97ed2fe3749a94a8a1c65a.dir
+      size: 141833186
+      nfiles: 1888
   predict:
     cmd: python3 src/predict.py data/prepared data/predictions data/store
     deps:
@@ -75,20 +75,60 @@ stages:
       size: 560713
       nfiles: 5
   train:
-    cmd: python3 src/train.py data/trained
+    cmd: python3 src/train.py data/split data/trained data/augmented
     deps:
-    - path: data/prepared
-      md5: 3df7dc0e97e16a2dbfb0919613aaf1b2.dir
-      size: 6967445
-      nfiles: 256
+    - path: data/augmented
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: data/split
+      md5: f108b1763cd2bb77fe2d50e6fa40b4cd.dir
+      size: 199890908
+      nfiles: 3304
     - path: src/train.py
-      md5: 266947052284df6f4efcc1d087a2227a
-      size: 491
+      md5: 44ead97455ea020033019cf48c64a02d
+      size: 516
     params:
       params.yaml:
         ingest.dcount: 1
     outs:
     - path: data/trained
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+  split:
+    cmd: python3 src/split_yolo.py data/prepared data/split
+    deps:
+    - path: data/prepared
+      md5: 71f0c7855d18cd0480d1b1c7c331244e.dir
+      size: 824934
+      nfiles: 944
+    - path: src/split_yolo.py
+      md5: 27c3974cdf64d080724069a0780be4af
+      size: 7074
+    params:
+      params.yaml:
+        ingest.dcount: 1
+    outs:
+    - path: data/split
+      md5: b2c4c2764c55e1f29588314be2986f15.dir
+      size: 141061968
+      nfiles: 1888
+  augment:
+    cmd: python3 src/augment_yolo.py data/split data/augmented
+    deps:
+    - path: data/split
+      md5: 76be53903445c7894e750ebbc5e2ebe0.dir
+      size: 199445335
+      nfiles: 3302
+    - path: src/augment_yolo.py
+      md5: a334d22e12a50ed789ee1135f9af896b
+      size: 4981
+    params:
+      params.yaml:
+        ingest.dcount: 1
+    outs:
+    - path: data/augmented
       md5: d751713988987e9331980363e24189ce.dir
       size: 0
       nfiles: 0

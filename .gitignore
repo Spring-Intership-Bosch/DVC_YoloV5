@@ -1,3 +1,6 @@
 /buffer
 .streamlit
 /runs
+/datasets
+/yolov5s.pt
+/yolov5m.pt
