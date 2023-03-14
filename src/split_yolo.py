@@ -109,7 +109,7 @@ def extract_info_from_xml(xml_file):
 
 
 # Convert the info dict to the required yolo format and write it to disk
-def convert_to_yolov5(info_dict,annot_path):
+def convert_to_yolov5(info_dict,annot_path,class_name_to_id_mapping):
     print_buffer = []
     
     # For each bounding box
@@ -167,13 +167,14 @@ def main():
 
 
     
-    class_name_to_id_mapping = {"person-like": 0,
-                           "person": 1}
+    class_name_to_id_mapping = {}
     
     
     params = yaml.safe_load(open('params.yaml'))
     class_ids = params['class_id']
-    print(class_ids)
+    for id in class_ids.keys():
+        class_name_to_id_mapping[id] = class_ids[id]
+    print(class_name_to_id_mapping)
     input_path = sys.argv[1]
     annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations') )if x[-3:] == "xml"]
     annotations.sort()
@@ -184,7 +185,7 @@ def main():
 # Convert and save the annotations
     for ann in tqdm(annotations):
         info_dict = extract_info_from_xml(ann)
-        convert_to_yolov5(info_dict,annot_path)
+        convert_to_yolov5(info_dict,annot_path,class_name_to_id_mapping)
     #annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations')) if x[-3:] == "txt"]
 
     images = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'images', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'images'))]

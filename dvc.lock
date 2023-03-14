@@ -82,8 +82,8 @@ stages:
       size: 0
       nfiles: 0
     - path: data/split
-      md5: f108b1763cd2bb77fe2d50e6fa40b4cd.dir
-      size: 199890908
+      md5: 8e2ca739655ddad4de9d35bf6a232efa.dir
+      size: 199890583
       nfiles: 3304
     - path: src/train.py
       md5: 44ead97455ea020033019cf48c64a02d
@@ -104,22 +104,22 @@ stages:
       size: 824934
       nfiles: 944
     - path: src/split_yolo.py
-      md5: 27c3974cdf64d080724069a0780be4af
-      size: 7074
+      md5: b2a741ca320f9e61521a00c3235c2000
+      size: 7168
     params:
       params.yaml:
         ingest.dcount: 1
     outs:
     - path: data/split
-      md5: b2c4c2764c55e1f29588314be2986f15.dir
+      md5: 1c175cb92739387ea16444b94b7659a9.dir
       size: 141061968
       nfiles: 1888
   augment:
     cmd: python3 src/augment_yolo.py data/split data/augmented
     deps:
     - path: data/split
-      md5: 76be53903445c7894e750ebbc5e2ebe0.dir
-      size: 199445335
+      md5: d488ea8cd7d96073fa8c602a7d5736ca.dir
+      size: 199445030
       nfiles: 3302
     - path: src/augment_yolo.py
       md5: a334d22e12a50ed789ee1135f9af896b
