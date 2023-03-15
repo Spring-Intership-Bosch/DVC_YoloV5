@@ -1,5 +1,5 @@
-train: ../../data/split/v1/images/train
-val:  ../../data/split/v1/images/val
+train: ../../data/split/images/train
+val:  ../../data/split/images/val
 #test: karthika_dataset/images/test/
 
 # number of classes

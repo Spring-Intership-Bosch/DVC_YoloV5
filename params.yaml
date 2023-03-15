@@ -1,13 +1,14 @@
 model: yolov5
 ingest:
-  dcount: 1
+  dcount: 0
+  dpath: dataset3.zip
 class_id:
   person: 0
   person-like: 1
 yolov5:
-  weights: runs/train/exp3/weights/best.pt
+  weights: runs/train/exp7/weights/best.pt
   hyps:
-    epochs: 20
+    epochs: 1
     batch: 16
     optimizer: Adam
   outputs:

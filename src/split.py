@@ -109,10 +109,10 @@ def convert_and_save_annotations(class_name_to_id_mapping):
     return input_path
 
 def split_and_save(t_img,t_annot,v_img,v_annot):
-    split_train_image_path = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images','train')
-    split_train_annot_path = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'labels','train')
-    split_val_image_path = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images','val')
-    split_val_annot_path = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'labels','val')
+    split_train_image_path = os.path.join(sys.argv[2],'images','train')
+    split_train_annot_path = os.path.join(sys.argv[2],'labels','train')
+    split_val_image_path = os.path.join(sys.argv[2],'images','val')
+    split_val_annot_path = os.path.join(sys.argv[2],'labels','val')
     os.makedirs(split_train_annot_path,exist_ok=True)
     os.makedirs(split_train_image_path,exist_ok=True)
     os.makedirs(split_val_image_path,exist_ok=True)

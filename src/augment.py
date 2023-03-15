@@ -112,8 +112,8 @@ def convert_yolov5_to_dataFrame(annot_path):
     return aug_df
 
 def yolov5Model():
-    image_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","images","train")
-    annot_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","labels","train")
+    image_path = os.path.join(sys.argv[1],"images","train")
+    annot_path = os.path.join(sys.argv[1],"labels","train")
     txt_dataframe = convert_yolov5_to_dataFrame(annot_path)
     #Augmentations
     #Store augmentations in Train folder

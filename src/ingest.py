@@ -14,7 +14,7 @@ os.makedirs(origimg_path, exist_ok=True)
 logger = logg.log("ingest.py")
 logger.info('INGESTING DATASET')
 sys.path.append('../')
-with zipfile.ZipFile(f'buffer/dataset{params["dcount"]}.zip',"r") as zipf:
+with zipfile.ZipFile(f'buffer/{params["dpath"]}',"r") as zipf:
     zipf.extractall(data_path)
     zipf.extractall(origimg_path)
     zipf.extractall(datasets_path)
