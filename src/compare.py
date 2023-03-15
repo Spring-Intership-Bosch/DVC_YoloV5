@@ -24,17 +24,21 @@ def get_metrics(dir):
     return metrics_df
 
 def get_best_model(met_dir,flag):
+    count = params['ingest']['dcount']
+    version = 0
     path = ''
     if flag == False:
         path = [sorted(Path(met_dir).iterdir(), key=os.path.getmtime,reverse=True)][0][0]
         path = str(path) + '/weights/best.pt'
+        version = count
     else:
         if len(os.listdir(met_dir)) > 1:
             path = [sorted(Path(met_dir).iterdir(), key=os.path.getmtime,reverse=True)][0][1]
             path = str(path) + '/weights/best.pt'
+            version = count-1
         else:
             path = 'pretrained/best.pt'
-    return path
+    return path,version
 
 def compare_metrics(val_met,pred_met,met_dir):
     best_model_path = ''
@@ -60,10 +64,11 @@ def yolov5Model():
     pred_met = get_metrics(val_dir)
     print(val_met)
     print(pred_met)
-    best_model = compare_metrics(val_met,pred_met,train_dir)
+    best_model,count = compare_metrics(val_met,pred_met,train_dir)
     print(best_model)
     logger.info('BEST MODEL PATH - '+best_model)
     params['yolov5']['weights'] = best_model
+    params['yolov5']['version'] = count
     yaml.dump(params, open('params.yaml', 'w'), sort_keys=False)
 
 def main():
