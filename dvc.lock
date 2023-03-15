@@ -8,25 +8,25 @@ stages:
       size: 665
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 2
     outs:
     - path: data/prepared
-      md5: 5e7cb14b062b188e2469fb9d72f1d705.dir
+      md5: 2ef432e9550d604f192dc6e93e3124c0.dir
       size: 141833186
       nfiles: 1888
   predict:
     cmd: python3 src/predict.py data/split data/predicted data/split
     deps:
     - path: data/split
-      md5: 09d45d8e41f68b662bcfac00446fb5af.dir
-      size: 141089007
+      md5: f19f9211b92d6c647527ab04b1becf81.dir
+      size: 141086157
       nfiles: 1889
     - path: src/predict.py
       md5: e3d8acdbdedc7ee26392d108b1f0b693
       size: 810
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 2
     outs:
     - path: data/predicted
       md5: d751713988987e9331980363e24189ce.dir
@@ -82,15 +82,15 @@ stages:
       size: 0
       nfiles: 0
     - path: data/split
-      md5: 10db464129dd5d9f6c9031d58d3f1049.dir
-      size: 199850152
+      md5: f3907e3590ac1ed9d752f81b602e42fc.dir
+      size: 198772856
       nfiles: 3304
     - path: src/train.py
       md5: da13701898f22dbd46463fbb215749c0
       size: 839
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 2
     outs:
     - path: data/trained
       md5: d751713988987e9331980363e24189ce.dir
@@ -100,7 +100,7 @@ stages:
     cmd: python3 src/split.py data/prepared data/split
     deps:
     - path: data/prepared
-      md5: 9f023f9d5521cb9deba97207957b2525.dir
+      md5: 24ff39135e4b27000c625d688715df0b.dir
       size: 824934
       nfiles: 944
     - path: src/split.py
@@ -108,7 +108,7 @@ stages:
       size: 5959
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 2
     outs:
     - path: data/split
       md5: c6f3bb682585e8292624ce698f4bc495.dir
@@ -118,15 +118,15 @@ stages:
     cmd: python3 src/augment.py data/split data/augmented
     deps:
     - path: data/split
-      md5: 4580ee9fc730e17a3e7ba6dcfa7b9478.dir
-      size: 199395316
+      md5: 8afa601af53662ed21c8db6e74f1787f.dir
+      size: 198364740
       nfiles: 3303
     - path: src/augment.py
       md5: 66485d9686ad35082b3e51dd6dd1603c
       size: 4768
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 2
     outs:
     - path: data/augmented
       md5: d751713988987e9331980363e24189ce.dir
@@ -148,9 +148,9 @@ stages:
       size: 2569
     params:
       params.yaml:
-        ingest.dcount: 3
+        ingest.dcount: 2
         yolov5.hyps.epochs: 1
-        yolov5.weights: runs/train/exp2/weights/best.pt
+        yolov5.weights: pretrained/best.pt
     outs:
     - path: data/compared
       md5: d751713988987e9331980363e24189ce.dir
