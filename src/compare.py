@@ -2,6 +2,7 @@ import os
 import glob
 import re
 import pandas as pd
+import yaml
 
 
 from pathlib import Path
@@ -23,7 +24,11 @@ def get_best_model(met_dir,flag):
     if flag == False:
         path = [sorted(Path(met_dir).iterdir(), key=os.path.getmtime,reverse=True)][0][0]
     else:
-        path = [sorted(Path(met_dir).iterdir(), key=os.path.getmtime,reverse=True)][0][1]
+
+        if len(os.listdir(met_dir)) > 1:
+            path = [sorted(Path(met_dir).iterdir(), key=os.path.getmtime,reverse=True)][0][1]
+        else:
+            path = '/home/bdz1kor/Documents/GitHub/DVC_YoloV5/yolov5s.pt'
     
     return path
 
@@ -38,7 +43,7 @@ def compare_metrics(val_met,pred_met,met_dir):
     pred_mAP95 = pred_met['mAP50-95'][0]
 
     #False - Validated model is better
-    #True - predicted mode is better
+    #True - predicted model is better
     flag = False 
 
     if val_mAP50 > pred_mAP50 and val_mAP95 > pred_mAP95 :
@@ -51,13 +56,9 @@ def compare_metrics(val_met,pred_met,met_dir):
     return best_model_path 
 
 
-
-
-def main():
-
-
-    train_dir = "/home/bdz1kor/Documents/GitHub/DVC_YoloV5/runs/train/"
-    val_dir = "/home/bdz1kor/Documents/GitHub/DVC_YoloV5/runs/val/"
+def yolov5Model():
+    train_dir = "runs/train/"
+    val_dir = "runs/val/"
     val_met = get_metrics(train_dir)
     pred_met = get_metrics(val_dir)
     print(val_met)
@@ -65,5 +66,15 @@ def main():
     best_model = compare_metrics(val_met,pred_met,train_dir)
     print(best_model)
 
+
+
+def main():
+
+    if params['model'] == 'yolov5':
+        yolov5Model()
+   
+    
+
 if __name__ == "__main__":
+    params = yaml.safe_load(open('params.yaml'))
     main()
