@@ -1,6 +1,6 @@
 model: yolov5
 ingest:
-  dcount: 2
+  dcount: 3
   dpath: datasets1.zip
 class_id:
   person: 0
@@ -14,3 +14,5 @@ yolov5:
   outputs:
     train_dir: runs/train/
     val_dir: runs/val/
+  best:
+    version: 1
