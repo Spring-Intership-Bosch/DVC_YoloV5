@@ -136,12 +136,3 @@ dmypy.json
 
 /yol_env
 /datasets
-
-
-src/extras/__pycache__/
-
-__pycache__
-
-model/__pycache__
-
-.pyc*
