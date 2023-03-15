@@ -82,8 +82,8 @@ stages:
       size: 0
       nfiles: 0
     - path: data/split
-      md5: 043a96ecba30d7f00ee9c8a73c63657d.dir
-      size: 199498504
+      md5: 884b44b3f43953b07e7c5e6b9b27f732.dir
+      size: 199773116
       nfiles: 3304
     - path: src/train.py
       md5: 1a0e71aa36b447a8cece06460ea26efe
@@ -118,8 +118,8 @@ stages:
     cmd: python3 src/augment.py data/split data/augmented
     deps:
     - path: data/split
-      md5: c908c90811f98fc62394b1faf9c2c878.dir
-      size: 199077920
+      md5: 849ee6395f8238824b1b59c1a3157a22.dir
+      size: 199352512
       nfiles: 3303
     - path: src/augment.py
       md5: 37346df87a3e77a8908924e6816d96e4
@@ -144,8 +144,8 @@ stages:
       size: 0
       nfiles: 0
     - path: src/compare.py
-      md5: f1ae87b52117ed07232d82fd58f13f51
-      size: 1690
+      md5: ab05a18446311157fb71fea7b39dc9f1
+      size: 1835
     params:
       params.yaml:
         ingest.dcount: 1
