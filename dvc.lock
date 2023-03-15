@@ -82,8 +82,8 @@ stages:
       size: 0
       nfiles: 0
     - path: data/split
-      md5: aa51818909a9e8b4ba64c31dc4f77d76.dir
-      size: 199617857
+      md5: 4adf870a287b6ba8504f0e024e781372.dir
+      size: 200394600
       nfiles: 3304
     - path: src/train.py
       md5: da13701898f22dbd46463fbb215749c0
@@ -149,8 +149,8 @@ stages:
     params:
       params.yaml:
         ingest.dcount: 0
-        yolov5.hyps.epochs: 1
-        yolov5.weights: pretrained/best.pt
+        yolov5.hyps.epochs: 20
+        yolov5.weights: runs/train/exp2/weights/best.pt
     outs:
     - path: data/compared
       md5: d751713988987e9331980363e24189ce.dir

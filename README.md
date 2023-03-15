@@ -43,12 +43,26 @@ ingest:
 dvc repro
 ```
 
-<!-- ## 6. To run Streamlit App
+## 6. To run Streamlit App
 ```shell
 streamlit run main.py
-``` -->
+```
+<br>
 
-## 6. Adding pipeline stage
+## <li> streamlit UI to train on a set of images
+<br>
+<img src="screenshots/train.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
+<br>
+<br>
+
+
+## <li> streamlit UI to predict on images
+<br>
+<img src="screenshots/predict.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
+<br>
+<br>
+
+## 7. Adding pipeline stage
 
 ```shell
 dvc run -n <Stage_name> 
@@ -58,7 +72,7 @@ dvc run -n <Stage_name>
     python3 src/prepare.py
 ```
 
-## 7. Pipeline DAG
+## 8. Pipeline DAG
 ```shell
 dvc dag
 ```
@@ -87,7 +101,8 @@ SECRET_KEY = 'xxxxxxxxxxxxxx'
 <br>
 
 # Folder structure for metrics - train / val
-<li> a* metrics.csv * stores label, Precision, Recall, F1-score, mAP50 and mAP50-95.
+### <li> metrics.csv  stores label, Precision, Recall, F1-score, mAP50 and mAP50-95.
+### <li> results.csv  stores metrics like val_loss, batch_loss, accuracy, etc for each epoch.
 <br>
 <br>
 <img src="screenshots/runs.png" alt="Pipeline screenshot" title="DVC Pipeline" height="500">
