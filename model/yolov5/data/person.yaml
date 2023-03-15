@@ -1,5 +1,5 @@
-train: ../../data/split/v1/images/train
-val:  ../../data/split/v1/images/val
+train: ../../data/split/images/train
+val:  ../../data/split/images/val
 #test: karthika_dataset/images/test/
 
 # number of classes
@@ -7,14 +7,3 @@ nc: 2
 
 # class names
 names: ["person-like","person"]
-
-
-# train: karthika95-pedestrian-detection/Train/Train/JPEGImages/
-# val:  karthika95-pedestrian-detection/Val/Val/JPEGImages/
-# test: karthika95-pedestrian-detection/Test/Test/JPEGImages/
-
-# # number of classes
-# nc: 1
-
-# # class names
-# names: ["person"]

@@ -1,16 +1,14 @@
 import os,sys
-from distutils.dir_util import copy_tree
 import yaml
 from PIL import Image
 import cv2
 import pandas as pd 
-import xml.etree.ElementTree as ET
 import glob
 import os
 from PIL import Image
 import albumentations as A
-from tqdm import tqdm
 from progress.bar import Bar
+import extras.logger as logg
 
 if len(sys.argv) != 3:
     sys.stderr.write('Arguments error. Usage:\n')
@@ -56,14 +54,11 @@ def augmentation(image_path,annot_path,data,output_image_path,output_annot_path)
 
 #TRANSFORM THE DATA INTO CUSTOM DATA
 def transform(img_path,image_name,bboxes):
-
     #To read in image from path
     image_name = image_name+'.jpg'
     path = os.path.join(img_path,image_name)
     image = cv2.imread(path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-
     #Augmentation Tranformation
     transform = A.Compose([
     A.HorizontalFlip(p=1),
@@ -74,8 +69,6 @@ def transform(img_path,image_name,bboxes):
     # A.RGBShift(r_shift_limit=30, g_shift_limit=30, b_shift_limit=30, p=0.3
     #            )
 ], bbox_params=A.BboxParams(format='yolo'))
-    
-
     transformed = transform(image=image, bboxes=bboxes)
     transformed_image = transformed['image']
     transformed_bboxes = transformed['bboxes']
@@ -86,7 +79,6 @@ def save_images(aug_image,aug_boxes,output_image,output_annot):
     global count
     img_path = 'aug' + str(count) + '.jpg'
     annot_path = 'aug' + str(count) + '.txt'
-    
     output_image_path= os.path.join(output_image,img_path)
     output_annot_path= os.path.join(output_annot,annot_path)
     f = open(output_annot_path,'w')
@@ -97,7 +89,6 @@ def save_images(aug_image,aug_boxes,output_image,output_annot):
     count = count +1
     aug.save(output_image_path)
     return 
-
 
 def convert_yolov5_to_dataFrame(annot_path):
     aug_list = []
@@ -120,43 +111,27 @@ def convert_yolov5_to_dataFrame(annot_path):
     aug_df = pd.DataFrame(aug_list, columns = column_name)
     return aug_df
 
-
 def yolov5Model():
-    image_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","images","train")
-    annot_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}","labels","train")
+    image_path = os.path.join(sys.argv[1],"images","train")
+    annot_path = os.path.join(sys.argv[1],"labels","train")
     txt_dataframe = convert_yolov5_to_dataFrame(annot_path)
     #Augmentations
     #Store augmentations in Train folder
     augmentation(image_path,annot_path,txt_dataframe,image_path,annot_path)
 
 def main():
-
-    
-    print("-------------------------------")
-    print("Augmenting.....")
-    print("-------------------------------")
-    
-    #Input path DIRS
+    logger.info('AUGMENTING')
     if params['model'] == 'yolov5':
         yolov5Model()
-    
-    
+    logger.info('AUGMENTING COMPLETED')
 
 if __name__ == "__main__":
+    logger = logg.log("augment.py")
     params = yaml.safe_load(open('params.yaml'))
     outputaug = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}")
     os.makedirs(outputaug, exist_ok = True)
-
-    #Output path DIRS
     output_image_path = os.path.join(outputaug,'images')
     output_annot_path = os.path.join(outputaug,'labels')
     os.makedirs(output_image_path,exist_ok= True)
     os.makedirs(output_annot_path,exist_ok=True)
-    
     main()
-
-
-
-
-
-

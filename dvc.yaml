@@ -40,7 +40,7 @@ stages:
     - data/trained
   
   predict:
-    cmd: python3 src/predict.py data/split data/predicted
+    cmd: python3 src/predict.py data/split data/predicted data/split
     deps:
     - src/predict.py
     - data/split
@@ -48,13 +48,16 @@ stages:
     - ingest.dcount
     outs:
     - data/predicted
-
-
+  
   compare:
-    cmd: python3 src/compare.py data/trained data/predicted
+    cmd: python3 src/compare.py data/trained data/compared data/predicted 
     deps:
     - src/compare.py
     - data/predicted
     - data/trained
     params:
     - ingest.dcount
+    - yolov5.weights
+    - yolov5.hyps.epochs
+    outs:
+    - data/compared

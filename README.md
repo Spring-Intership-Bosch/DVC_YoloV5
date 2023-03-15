@@ -78,7 +78,16 @@ SECRET_KEY = 'xxxxxxxxxxxxxx'
 <br>
 <br>
 
-# dvc.Yaml
+# dvc.yaml -  pipeline format
 <br>
 
 <img src="screenshots/dvc.png" alt="Pipeline screenshot" title="DVC Pipeline" height="900">
+
+<br>
+<br>
+
+# Folder structure for metrics - train / val
+<li> a* metrics.csv * stores label, Precision, Recall, F1-score, mAP50 and mAP50-95.
+<br>
+<br>
+<img src="screenshots/runs.png" alt="Pipeline screenshot" title="DVC Pipeline" height="500">
