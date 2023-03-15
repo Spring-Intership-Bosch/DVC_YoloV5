@@ -110,7 +110,7 @@ def run(
         workers=8,  # max dataloader workers (per RANK in DDP mode)
         single_cls=False,  # treat as single-class dataset
         augment=False,  # augmented inference
-        verbose=False,  # verbose output
+        verbose=True,  # verbose output
         save_txt=False,  # save results to *.txt
         save_hybrid=False,  # save label+prediction hybrid results to *.txt
         save_conf=False,  # save confidences in --save-txt labels
@@ -123,7 +123,7 @@ def run(
         model=None,
         dataloader=None,
         save_dir=Path(''),
-        plots=True,
+        plots=False,
         callbacks=Callbacks(),
         compute_loss=None,
 ):
@@ -282,7 +282,10 @@ def run(
     # Print results
     pf = '%22s' + '%11i' * 2 + '%11.3g' * 4  # print format
     LOGGER.info(pf % ('all', seen, nt.sum(), mp, mr, map50, map))
-    m_f1 = (2*mp*mr)/(mp+mr)
+    if (mp+mr) == 0:
+        m_f1 = 0
+    else:
+        m_f1 = (2*mp*mr)/(mp+mr)
     info_dict = [('all',seen,nt.sum(),mp,mr,m_f1,map50,map)]
     if nt.sum() == 0:
         LOGGER.warning(f'WARNING ⚠️ no labels found in {task} set, can not compute metrics without labels')

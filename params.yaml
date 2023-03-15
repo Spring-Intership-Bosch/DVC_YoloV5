@@ -1,14 +1,15 @@
 model: yolov5
-
 ingest:
   dcount: 1
-
 class_id:
-  person : 0
-  person-like : 1
-
+  person: 0
+  person-like: 1
 yolov5:
-  - weights: yolov5s.pt
-  - epochs: 1
-  - batch: 16
-  - optimizer: Adam
+  weights: runs/train/exp3/weights/best.pt
+  hyps:
+    epochs: 20
+    batch: 16
+    optimizer: Adam
+  outputs:
+    train_dir: runs/train/
+    val_dir: runs/val/

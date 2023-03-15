@@ -14,15 +14,15 @@ if len(sys.argv) != 4:
     sys.exit(1)
 
 def yolov5Model():
-    args = {k:v for e in params['yolov5'] for (k,v) in e.items()}
-    logger.info('TRAINING')
-    train.run(data='person.yaml', imgsz=640, **args)
-    logger.info('TRAINING COMPLETED')
+    args = params['yolov5']['hyps']
+    wt = params['yolov5']['weights']
+    train.run(data='person.yaml', imgsz=320, weights=wt, **args)
 
 def main():
+    logger.info('TRAINING')
     if params['model'] == 'yolov5':
         yolov5Model()
-
+    logger.info('TRAINING COMPLETED')
 
 if __name__ == "__main__":
     logger = logg.log("train.py")
