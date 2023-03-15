@@ -1,65 +1,31 @@
-from cProfile import label
-import torch
 import sys
 import os
-from PIL import Image
 import yaml
-import glob
-import pandas as pd
-import cv2
+import extras.logger as logg
 
-if len(sys.argv) != 4:
-    sys.stderr.write('Arguments error. Usage:\n')
-    sys.stderr.write(
-        '\tpython3 src/predict.py data/prepared data/predictions data/store\n'
-    )
-    sys.exit(1)
+sys.path.insert(0, 'model/yolov5')
+import val
 
-params = yaml.safe_load(open('params.yaml'))['ingest']
+# if len(sys.argv) != 4:
+#     sys.stderr.write('Arguments error. Usage:\n')
+#     sys.stderr.write(
+#         '\tpython3 src/train.py data/split data/trained data/augmented\n'
+#     )
+#     sys.exit(1)
 
+def yolov5Model():
+    args = {k:v for e in params['yolov5'] for (k,v) in e.items()}
+    logger.info('INFERING')
+    val.run(data='model/yolov5/data/person.yaml', weights='runs/train/exp10/weights/best.pt', project='runs/val')
+    logger.info('VALIDATING COMPLETED')
 
-data_path = os.path.join(sys.argv[1], f"v{params['dcount']}", 'images')
-predict_path = os.path.join(sys.argv[2], f"v{params['dcount']}", 'images')
-origpred = os.path.join(sys.argv[3], f"v{params['dcount']}", 'predictions')
+def main():
+    if params['model'] == 'yolov5':
+        yolov5Model()
 
-pred_path = os.path.join(sys.argv[2], "v{}".format(params['dcount']))
-
-print(predict_path)
-print(data_path)
-
-os.makedirs(predict_path, exist_ok=True)
-os.makedirs(origpred, exist_ok=True)
-
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True, _verbose =False )
-img = os.path.join(data_path, os.listdir(data_path)[0])
-
-preds = glob.glob(f'{data_path}/*.jpg', recursive=True)
-labels = os.listdir(data_path)
-
-information={'xmin':[],'ymin':[],'xmax':[],'ymax':[],'name':[] ,'label':[], 'image':[]}
-def predict(information,data_path):
-    for images in os.listdir(data_path):
-        img = cv2.imread(os.path.join(data_path,images))
-        pred = model(img)
-        pred.render()
-        df = pred.pandas().xyxyn[0]
-        res = df[df["name"]=="person"]
-        
-        for index, yolo_bb in res.iterrows():
-            #file_name = images.split('/')[-1][0:-4]
-            information['name']+= [images]
-            information['label']+= [yolo_bb['name']]
-            information['xmin']+= [yolo_bb["xmin"]*img.shape[1]]
-            information['xmax']+= [yolo_bb["xmax"]*img.shape[1]]
-            information['ymin']+= [yolo_bb["ymin"]*img.shape[0]]
-            information['ymax']+= [yolo_bb["ymax"]*img.shape[0]]
-            information['image']+= [f'{data_path}/{images}']
-    return pd.DataFrame(information)
-
-
-print("-------------------------------")
-print("Prediction using model.....")
-print("-------------------------------")
-annots_data = predict(information,data_path)
-annots_data.to_pickle(os.path.join(pred_path,'v{}.pkl'.format(params['dcount'])))
-print(annots_data)
+if __name__ == "__main__":
+    logger = logg.log("predict.py")
+    params = yaml.safe_load(open('params.yaml'))
+    output = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images')
+    os.makedirs(output, exist_ok=True)
+    main()

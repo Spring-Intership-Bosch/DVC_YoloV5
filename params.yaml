@@ -1,9 +1,14 @@
-model : yolov5
+model: yolov5
 
 ingest:
   dcount: 1
 
-
 class_id:
   person : 0
   person-like : 1
+
+yolov5:
+  - weights: yolov5s.pt
+  - epochs: 1
+  - batch: 16
+  - optimizer: Adam

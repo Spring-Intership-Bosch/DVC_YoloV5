@@ -15,7 +15,7 @@ from progress.bar import Bar
 if len(sys.argv) != 3:
     sys.stderr.write('Arguments error. Usage:\n')
     sys.stderr.write(
-        '\tpython3 src/augment_yolo.py data/split data/augmented\n'
+        '\tpython3 src/augment.py data/split data/augmented\n'
     )
     sys.exit(1)
 

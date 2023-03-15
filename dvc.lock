@@ -4,8 +4,8 @@ stages:
     cmd: python3 src/ingest.py
     deps:
     - path: src/ingest.py
-      md5: 11f2c791d421cf2ca7beda3b99798aa5
-      size: 614
+      md5: 11f9d494b4f9fd3a7f2b59e49875cf1b
+      size: 678
     params:
       params.yaml:
         ingest.dcount: 1
@@ -15,23 +15,23 @@ stages:
       size: 141833186
       nfiles: 1888
   predict:
-    cmd: python3 src/predict.py data/prepared data/predictions data/store
+    cmd: python3 src/predict.py data/split data/predicted
     deps:
-    - path: data/prepared
-      md5: f6eb12166cd084b26e83dd52d2b827ef.dir
-      size: 533971
-      nfiles: 10
+    - path: data/split
+      md5: e2b5816cfc2b6481db3662b3bf1a5324.dir
+      size: 141086917
+      nfiles: 1889
     - path: src/predict.py
-      md5: a0879833f39778bd56830e837a7c1007
-      size: 2215
+      md5: 820793f618adcffd674f69a7b20d30b3
+      size: 895
     params:
       params.yaml:
         ingest.dcount: 1
     outs:
-    - path: data/predictions
-      md5: 9a6564485e70e293a939edb530bd46e7.dir
-      size: 1466
-      nfiles: 1
+    - path: data/predicted
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
   transform:
     cmd: python3 src/transform.py data/prepared data/transformed
     deps:
@@ -82,12 +82,12 @@ stages:
       size: 0
       nfiles: 0
     - path: data/split
-      md5: 6fc8f722bdef7c6b24f817ea133cd2b0.dir
-      size: 199371691
+      md5: 043a96ecba30d7f00ee9c8a73c63657d.dir
+      size: 199498504
       nfiles: 3304
     - path: src/train.py
-      md5: 44ead97455ea020033019cf48c64a02d
-      size: 516
+      md5: 1a0e71aa36b447a8cece06460ea26efe
+      size: 821
     params:
       params.yaml:
         ingest.dcount: 1
@@ -97,15 +97,15 @@ stages:
       size: 0
       nfiles: 0
   split:
-    cmd: python3 src/split_yolo.py data/prepared data/split
+    cmd: python3 src/split.py data/prepared data/split
     deps:
     - path: data/prepared
       md5: 71f0c7855d18cd0480d1b1c7c331244e.dir
       size: 824934
       nfiles: 944
-    - path: src/split_yolo.py
-      md5: 38a8b11e238fd8d6a4d31c885c601df6
-      size: 7270
+    - path: src/split.py
+      md5: 4b0e182a91151a07737f5af1b62a65e5
+      size: 6836
     params:
       params.yaml:
         ingest.dcount: 1
@@ -115,15 +115,15 @@ stages:
       size: 141061968
       nfiles: 1888
   augment:
-    cmd: python3 src/augment_yolo.py data/split data/augmented
+    cmd: python3 src/augment.py data/split data/augmented
     deps:
     - path: data/split
-      md5: c705967eab87fff9aad2b2c6f6130917.dir
-      size: 198926138
-      nfiles: 3302
-    - path: src/augment_yolo.py
-      md5: 3b5f2f4eed629fb6dfaee4e74828a4ee
-      size: 5014
+      md5: c908c90811f98fc62394b1faf9c2c878.dir
+      size: 199077920
+      nfiles: 3303
+    - path: src/augment.py
+      md5: 37346df87a3e77a8908924e6816d96e4
+      size: 5009
     params:
       params.yaml:
         ingest.dcount: 1
@@ -132,3 +132,20 @@ stages:
       md5: d751713988987e9331980363e24189ce.dir
       size: 0
       nfiles: 0
+  compare:
+    cmd: python3 src/compare.py data/trained data/predicted
+    deps:
+    - path: data/predicted
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: data/trained
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: src/compare.py
+      md5: f1ae87b52117ed07232d82fd58f13f51
+      size: 1690
+    params:
+      params.yaml:
+        ingest.dcount: 1

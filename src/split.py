@@ -1,45 +1,3 @@
-# import os
-# import sys
-# import yaml
-# import pickle
-# from tqdm import tqdm
-# import cv2
-# import fnmatch
-# import math
-
-# import splitfolders
-
-
-# if len(sys.argv) != 3:
-#     sys.stderr.write('Arguments error. Usage:\n')
-#     sys.stderr.write(
-#         '\tpython3 src/split.py data/prepared data/split\n'
-#     )
-#     sys.exit(1)
-
-
-
-
-
-# def main():
-#     params = yaml.safe_load(open('params.yaml'))
-#     outputsplit = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}")
-#     #makeBatches(outputsplit)
-#     infer_batch = params['split']['val']
-#     train_batch = params['split']['train']
-#     input_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}")
-   
-#     os.makedirs(outputsplit, exist_ok = True)
-#     print("-------------------------------")
-#     print("Splitting.....")
-#     print("-------------------------------")
-#     splitfolders.ratio(input_path, output=outputsplit, ratio=(train_batch, infer_batch), group_prefix=None, move=False)
-
-
-# if __name__ == '__main__':
-#     main()
-
-
 
 
 import os 
@@ -54,15 +12,11 @@ import sys
 if len(sys.argv) != 3:
     sys.stderr.write('Arguments error. Usage:\n')
     sys.stderr.write(
-        '\tpython3 src/split_yolo.py data/prepared data/split\n'
+        '\tpython3 src/split.py data/prepared data/split\n'
     )
     sys.exit(1)
 
 random.seed(108)
-
-# class_name_to_id_mapping = {"person-like": 0,
-#                            "person": 1}
-
 
 def extract_info_from_xml(xml_file):
     root = ET.parse(xml_file).getroot()
@@ -222,3 +176,26 @@ def main():
 if __name__ == '__main__':
     params = yaml.safe_load(open('params.yaml'))
     main()
+
+
+
+
+
+
+# def main():
+#     params = yaml.safe_load(open('params.yaml'))
+#     outputsplit = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}")
+#     #makeBatches(outputsplit)
+#     infer_batch = params['split']['val']
+#     train_batch = params['split']['train']
+#     input_path = os.path.join(sys.argv[1],f"v{params['ingest']['dcount']}")
+   
+#     os.makedirs(outputsplit, exist_ok = True)
+#     print("-------------------------------")
+#     print("Splitting.....")
+#     print("-------------------------------")
+#     splitfolders.ratio(input_path, output=outputsplit, ratio=(train_batch, infer_batch), group_prefix=None, move=False)
+
+
+# if __name__ == '__main__':
+#     main()
