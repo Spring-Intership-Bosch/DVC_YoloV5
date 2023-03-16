@@ -65,25 +65,35 @@ def show_metrics():
             df = pd.read_csv(metrics_path)
             st.write(df)
 
+            col1 = df["mAP50"]
+            col1 = col1.to_numpy()
+            col1 = np.reshape(col1,(3,1))
+            chart_data = pd.DataFrame(col1, columns=['best model'])
+            st.write("### mAP")
+            st.line_chart(chart_data)
+
         else:
             st.write("### Best model metrics")
             metrics_path = os.path.join(path,"metrics.csv")
             df = pd.read_csv(metrics_path)
+            st.write(df)
+
             col1 = df["mAP50"]
             col1 = col1.to_numpy()
             col1 = np.reshape(col1,(3,1))
-            st.write(df)
 
             path = os.path.join(params['yolov5']['outputs'][option], "exp{}".format(params['ingest']['dcount'] - 1))
             st.write("### Current model metrics")
             metrics_path = os.path.join(path,"metrics.csv")
             df = pd.read_csv(metrics_path)
+            st.write(df)
+
             col2 = df["mAP50"]
             col2 = col2.to_numpy()
             col2 = np.reshape(col2,(3,1))
-            st.write(df)
 
             chart_data = pd.DataFrame(np.concatenate((col1,col2), axis = 1), columns=['best model', 'current model'])
+            st.write("### mAP")
             st.line_chart(chart_data)
 
 
@@ -94,29 +104,29 @@ def plot_graphs():
     val_path = os.path.join(params['yolov5']['outputs']['val_dir'], "exp{}".format(params["yolov5"]["best"]["version"]))
 
     if params["ingest"]["dcount"] - 1 == params["yolov5"]["best"]["version"]:
-        st.write("### Best model Confusion Matrix")
-        st.write("Best model is latest run model")
+        st.write("# Best model is latest run model")
+        st.write("### Confusion Matrix")
         st.image(os.path.join(val_path,"confusion_matrix.png"))
         st.write('\n')
-        st.write("F1 Curve")
+        st.write("### F1 Curve")
         st.image(os.path.join(val_path,"F1_curve.png"))
     
     else:
         col1.write("## Best model")
 
-        col1.write("Confusion Matrix")
+        col1.write("### Confusion Matrix")
         col1.image(os.path.join(val_path,"confusion_matrix.png"))
         col1.write('\n')
-        col1.write("F1 Curve")
+        col1.write("### F1 Curve")
         col1.image(os.path.join(val_path,"F1_curve.png"))
 
         val_path = os.path.join(params['yolov5']['outputs']['val_dir'], "exp{}".format(params['ingest']['dcount'] - 1))
         col2.write("## Current model")
-        col2.write("Confusion Matrix")
+        col2.write("### Confusion Matrix")
         col2.image(os.path.join(val_path,"confusion_matrix.png"))
         
         col2.write('\n')
-        col2.write("F1 Curve")
+        col2.write("### F1 Curve")
         col2.image(os.path.join(val_path,"F1_curve.png"))
 
     
