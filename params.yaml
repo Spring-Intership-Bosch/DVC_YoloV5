@@ -1,6 +1,6 @@
 model: yolov5
 ingest:
-  dcount: 3
+  dcount: 2
   dpath: datasets1.zip
 class_id:
   person: 0
@@ -8,11 +8,9 @@ class_id:
 yolov5:
   weights: pretrained/best.pt
   hyps:
-    epochs: 1
+    epochs: 10
     batch: 16
     optimizer: Adam
   outputs:
     train_dir: runs/train/
     val_dir: runs/val/
-  best:
-    version: 1

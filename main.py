@@ -7,6 +7,7 @@ import model.yolov5.detect as detect
 
 import pandas as pd
 import numpy as np
+import re
 
 params = yaml.safe_load(open('params.yaml'))
 
@@ -56,9 +57,21 @@ def show_metrics():
         flag = True
     
     if flag:
-        path = os.path.join(params['yolov5']['outputs'][option], "exp{}".format(params["yolov5"]["best"]["version"]))
+        weights_path = params["yolov5"]["weights"]
+        # weights_path = "runs/train/exp2/weights/best.pt"
+        if weights_path == "pretrained/best.pt":
+            best_version = "exp"
+        else:
+            best_version = weights_path.split("/")[2]
+        
+        if params["ingest"]["dcount"] == 1:
+            current_version = "exp"
+        else:
+            current_version = "exp" + str(params["ingest"]["dcount"])
 
-        if params["ingest"]["dcount"] - 1 == params["yolov5"]["best"]["version"]:
+        path = os.path.join(params['yolov5']['outputs'][option], best_version)
+
+        if current_version == best_version:
             st.write("### Best model metrics")
             st.write("Best model is latest run model")
             metrics_path = os.path.join(path,"metrics.csv")
@@ -82,7 +95,7 @@ def show_metrics():
             col1 = col1.to_numpy()
             col1 = np.reshape(col1,(3,1))
 
-            path = os.path.join(params['yolov5']['outputs'][option], "exp{}".format(params['ingest']['dcount'] - 1))
+            path = os.path.join(params['yolov5']['outputs'][option], current_version)
             st.write("### Current model metrics")
             metrics_path = os.path.join(path,"metrics.csv")
             df = pd.read_csv(metrics_path)
@@ -101,9 +114,22 @@ def show_metrics():
 
 def plot_graphs():
     col1,col2 = st.columns(2)
-    val_path = os.path.join(params['yolov5']['outputs']['val_dir'], "exp{}".format(params["yolov5"]["best"]["version"]))
 
-    if params["ingest"]["dcount"] - 1 == params["yolov5"]["best"]["version"]:
+    weights_path = params["yolov5"]["weights"]
+    # weights_path = "runs/train/exp2/weights/best.pt"
+    if weights_path == "pretrained/best.pt":
+        best_version = "exp"
+    else:
+        best_version = weights_path.split("/")[2]
+
+    if params["ingest"]["dcount"] == 1:
+            current_version = "exp"
+    else:
+        current_version = "exp" + str(params["ingest"]["dcount"])
+
+    val_path = os.path.join(params['yolov5']['outputs']['val_dir'], best_version)
+
+    if current_version == best_version:
         st.write("# Best model is latest run model")
         st.write("### Confusion Matrix")
         st.image(os.path.join(val_path,"confusion_matrix.png"))
@@ -120,7 +146,7 @@ def plot_graphs():
         col1.write("### F1 Curve")
         col1.image(os.path.join(val_path,"F1_curve.png"))
 
-        val_path = os.path.join(params['yolov5']['outputs']['val_dir'], "exp{}".format(params['ingest']['dcount'] - 1))
+        val_path = os.path.join(params['yolov5']['outputs']['val_dir'], current_version)
         col2.write("## Current model")
         col2.write("### Confusion Matrix")
         col2.image(os.path.join(val_path,"confusion_matrix.png"))
