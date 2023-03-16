@@ -135,7 +135,7 @@ def plot_graphs():
 def main():
     st.title("MLOps Pipeline")
     pages = {
-        "Mlops_pipeline": pipeline,
+        "Mlops pipeline": pipeline,
         "Metrics": show_metrics,
         "Plot Graphs": plot_graphs,
     }
