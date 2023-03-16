@@ -5,65 +5,146 @@ import glob
 import sys
 import model.yolov5.detect as detect
 
-def main():
-    st.title("MLOps Pipeline")
+import pandas as pd
+import numpy as np
+import re
 
-    op = st.selectbox('',('Choose one of the following', 'Predict on an image', 'Train new dataset'))
-    if op == 'Predict on an image':
-        img = st.file_uploader("Upload Image")
+params = yaml.safe_load(open('params.yaml'))
+
+def pipeline():
+    st.subheader('Choose Dataset')
+    opts = os.listdir('buffer')
+    opts.sort()
+    option = st.selectbox('',opts)
+
+    if st.button('Run Pipeline'):
+        st.subheader('Running YoloV5 Pipeline..........')
         
-        if img:
-            with open(f'detect/image.png', "wb") as f:
-                f.write(img.getbuffer())
-            
-            st.subheader('Predicting........')
-            st.image('detect/image.png')
-            detect.run(weights=params['yolov5']['weights'], source='detect/image.png')
-            st.success('Prediction Successful')
-            st.image('runs/detect/exp/image.png')
+        params['ingest']['dcount'] = params['ingest']['dcount'] +1
+        params['ingest']['dpath'] = option
+        yaml.dump(params, open('params.yaml', 'w'), sort_keys=False)
+        
+        if not os.system("dvc repro"):
+            st.success('Pipeline executed successfully')
+            show_metrics()
 
-    elif op == 'Train new dataset':
-        st.subheader('Choose Dataset')
-        opts = os.listdir('buffer')
-        opts.sort()
-        option = st.selectbox('',opts)
+        else:
+            st.error("Pipleine execution failed")
 
-        if st.button('Run Pipeline'):
-            st.subheader('Running YoloV5 Pipeline..........')
-            
-            params['ingest']['dcount'] = params['ingest']['dcount'] +1
-            params['ingest']['dpath'] = option
-            yaml.dump(params, open('params.yaml', 'w'), sort_keys=False)
 
-            if not os.system("dvc repro"):
-                st.success('Pipeline executed successfully')
+def show_metrics():
+    dcou = params['ingest']['dcount']
+    if dcou != 0:
+        if params["yolov5"]["weights"] == "pretrained/best.pt":
+            bbb = 1
+        else:
+            if params["yolov5"]["weights"].split("/")[2] == 'exp':
+                bbb=1
             else:
-                st.error("Pipleine execution failed")
+                bbb = params["yolov5"]["weights"].split("/")[2]
+                bbb = bbb[-1]
+
+        if int(bbb) == int(dcou):
+            if bbb == 1:
+                # st.write('current model is  runs/val/exp')
+                # st.write('prev model is  runs/train/exp')
+                prev_best_model = 'runs/train/exp'
+                current_model = 'runs/val/exp'
+            else:
+                # st.write('current model is  runs/val/exp'+str(dcou))
+                # st.write('prev model is  runs/train/exp'+str(dcou))
+                prev_best_model = 'runs/train/exp'+str(dcou)
+                current_model = 'runs/val/exp'+str(dcou)
+        else:
+            if bbb == 1:
+                # st.write('current model is  runs/train/exp'+str(dcou))
+                # st.write('prev model is  runs/val/exp'+str(dcou))
+                prev_best_model = 'runs/val/exp'
+                current_model = 'runs/train/exp'
+            else:
+                # st.write('current model is  runs/train/exp'+str(dcou))
+                # st.write('prev model is  runs/val/exp'+str(dcou))
+                prev_best_model = 'runs/val/exp'+str(dcou)
+                current_model = 'runs/train/exp'+str(dcou)
+        
+        df1 = pd.read_csv(current_model+'/metrics.csv')
+        df2 = pd.read_csv(prev_best_model+'/metrics.csv')
+        
+        coll1 = df2["mAP50"]
+        coll1 = coll1.to_numpy()
+        coll1 = np.reshape(coll1,(3,1))
+
+        coll2 = df1["mAP50"]
+        coll2 = coll2.to_numpy()
+        coll2 = np.reshape(coll2,(3,1))
+
+        chart_data = pd.DataFrame(np.concatenate((coll1,coll2), axis = 1), columns=['best model', 'current model'])
+        st.write("### mAP")
+        st.line_chart(chart_data)
+        col1, col2 = st.columns(2)
+        col1.write("## Previous Best model")
+        col1.write("### Confusion Matrix")
+        col1.image(os.path.join(prev_best_model,"confusion_matrix.png"))
+        col1.write('\n')
+        col1.write("### F1 Curve")
+        col1.image(os.path.join(prev_best_model,"F1_curve.png"))
+
+        col2.write("## Current model")
+        col2.write("### Confusion Matrix")
+        col2.image(os.path.join(current_model,"confusion_matrix.png"))
+        
+        col2.write('\n')
+        col2.write("### F1 Curve")
+        col2.image(os.path.join(current_model,"F1_curve.png"))
+
+        col1.write("### Previous Best metrics")
+        metrics_path = os.path.join(prev_best_model,"metrics.csv")
+        df = pd.read_csv(metrics_path)
+        col1.write(df)
+
+        col2.write("### Current model metrics")
+        metrics_path = os.path.join(current_model,"metrics.csv")
+        df = pd.read_csv(metrics_path)
+        col2.write(df)
+    else:
+        st.title('TRAIN A DATASET TO EVALUATE METRICS')
+
+
+def hero_page():
+    st.image('hero.jpeg', width=1000)
+
+def predict_image():
+    img = st.file_uploader("Upload Image")
+    if img:
+        with open(f'detect/image.png', "wb") as f:
+            f.write(img.getbuffer())
+        
+        st.subheader('Predicting........')
+        st.image('detect/image.png')
+        detect.run(weights=params['yolov5']['weights'], source='detect/image.png')
+        st.success('Prediction Successful')
+        st.image('runs/detect/exp/image.png')
+
+def main():
+    st.set_page_config(layout="wide")
+    st.title("MLOps Pipeline for Pedestrian Detection")
+    pages = {
+        "Choose one of the following":hero_page,
+        "Train Dataset": pipeline,
+        "Predict on an Image": predict_image,
+        "Metrics": show_metrics,
+    }
+    st.sidebar.image('Bosch_logo.png')
     
-    # if imgs:
-    #     params = yaml.safe_load(open('params.yaml'))['ingest']
-    #     ddd = {'ingest': {'dcount': params['dcount']+1}}
-    #     yaml.dump(ddd, open('params.yaml', 'w'))
-        
-    #     os.makedirs('buffer', exist_ok=True)
-    #     for ff in os.listdir('buffer'):
-    #         os.remove(f'buffer/{ff}')
-    
-    #     with open(f'buffer/dataset{params["dcount"]+1}.zip', "wb") as f:
-    #         f.write(imgs.getbuffer())
-        
-    #     print('hello................', sys.executable)
-        
-        # if not os.system("dvc repro"):
-        #     st.success('Pipeline executed successfully')
-        #     imgname = os.listdir("data/store/v{}/evaluated".format(params["dcount"]+1))
-        #     preds = glob.glob("data/store/v{}/evaluated/*.*".format(params["dcount"]+1), recursive=True)
-        #     for index,im in enumerate(preds):
-        #         st.image(im, imgname[index])
-        #     print('done')
-    # else:
-    #     return
+    st.markdown("""---""")
+    st.sidebar.markdown("""---""")
+    st.sidebar.title('Select Model -')
+    opp = st.sidebar.selectbox('',('yolov5', 'detectron2'))
+    if opp == 'yolov5':
+        selected_page = st.sidebar.selectbox('',pages.keys())
+        pages[selected_page]()
+    else:
+        st.title('DETECTRON2 UNDER CONSTRUCTION.......')
 
 if __name__ == '__main__':
-    params = yaml.safe_load(open('params.yaml'))
     main()

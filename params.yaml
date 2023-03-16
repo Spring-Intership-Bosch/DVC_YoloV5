@@ -6,7 +6,7 @@ class_id:
   person: 0
   person-like: 1
 yolov5:
-  weights: runs/train/exp2/weights/best.pt
+  weights: pretrained/best.pt
   hyps:
     epochs: 1
     batch: 16

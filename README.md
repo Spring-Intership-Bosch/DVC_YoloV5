@@ -1,13 +1,13 @@
-# Pedestrian Detection & Segmentation MLOps Pipeline
+# Pedestrian Detection MLOps Pipeline (Local)
 
-## DVC pipeline for Pedestrian Detection & Segmentation using YoloV5 with Data Versioning
+## DVC pipeline for Pedestrian Detection using YoloV5 with Data Versioning
 
-<img src="screenshots/pipe.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
+<img src="screenshots/dvc_dag.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
 
 <br/>
 
-> ## Checkout to `clouds3` branch for pushing results/outputs to AWS S3 Bucket
-<br/>
+<!-- > ## Checkout to `clouds3` branch for pushing results/outputs to AWS S3 Bucket
+<br/> -->
 
 # Getting Started
 ## 1. Create a Python environment
@@ -38,7 +38,7 @@ ingest:
     dcount:0
 ```
 
-### 5. To run DVC pipeline
+## 5. To run DVC pipeline
 ```shell
 dvc repro
 ```
@@ -47,6 +47,20 @@ dvc repro
 ```shell
 streamlit run main.py
 ```
+<br>
+
+## <li> streamlit UI to train on a set of images
+<br>
+<img src="screenshots/train.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
+<br>
+<br>
+
+
+## <li> streamlit UI to predict on images
+<br>
+<img src="screenshots/predict.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
+<br>
+<br>
 
 ## 7. Adding pipeline stage
 
@@ -63,10 +77,31 @@ dvc run -n <Stage_name>
 dvc dag
 ```
 
-## 9. Push results/outputs to AWS S3
+<!-- ## 9. Push results/outputs to AWS S3
 Create .streamlit/secrets.toml file and add your AWS S3 BUCKET ACCESS_KEY and SECRET_KEY
 
 ```
 ACCESS_KEY = 'xxxxxxx'
 SECRET_KEY = 'xxxxxxxxxxxxxx'
-```
+``` -->
+
+
+## Folder Structer for DVC Pipeline - src/
+<br>
+<img src="screenshots/src.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
+<br>
+<br>
+
+# dvc.yaml -  pipeline format
+<br>
+
+<img src="screenshots/dvc.png" alt="Pipeline screenshot" title="DVC Pipeline" height="900">
+
+<br>
+<br>
+
+# Folder structure for metrics - train / val
+<li> metrics.csv  stores label, Precision, Recall, F1-score, mAP50 and mAP50-95.
+<br>
+<br>
+<img src="screenshots/runs.png" alt="Pipeline screenshot" title="DVC Pipeline" height="500">
