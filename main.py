@@ -1,13 +1,10 @@
 import streamlit as st
 import yaml
 import os
-import glob
-import sys
 import model.yolov5.detect as detect
-
 import pandas as pd
 import numpy as np
-import re
+import shutil
 
 params = yaml.safe_load(open('params.yaml'))
 
@@ -19,6 +16,7 @@ def pipeline():
 
     if st.button('Run Pipeline'):
         st.subheader('Running YoloV5 Pipeline..........')
+        shutil.rmtree('.dvc/cache', ignore_errors=True) 
         
         params['ingest']['dcount'] = params['ingest']['dcount'] +1
         params['ingest']['dpath'] = option
@@ -70,16 +68,16 @@ def show_metrics():
         df1 = pd.read_csv(current_model+'/metrics.csv')
         df2 = pd.read_csv(prev_best_model+'/metrics.csv')
         
-        coll1 = df2["mAP50"]
+        coll1 = df2["F1-Score"]
         coll1 = coll1.to_numpy()
         coll1 = np.reshape(coll1,(3,1))
 
-        coll2 = df1["mAP50"]
+        coll2 = df1["F1-Score"]
         coll2 = coll2.to_numpy()
         coll2 = np.reshape(coll2,(3,1))
 
-        chart_data = pd.DataFrame(np.concatenate((coll1,coll2), axis = 1), columns=['best model', 'current model'])
-        st.write("### mAP")
+        chart_data = pd.DataFrame(np.concatenate((coll1,coll2), axis = 1), columns=['best model', 'New model'])
+        st.write("## F1-Score")
         st.line_chart(chart_data)
         col1, col2 = st.columns(2)
         col1.write("## Previous Best model")
@@ -89,7 +87,7 @@ def show_metrics():
         col1.write("### F1 Curve")
         col1.image(os.path.join(prev_best_model,"F1_curve.png"))
 
-        col2.write("## Current model")
+        col2.write("## New model")
         col2.write("### Confusion Matrix")
         col2.image(os.path.join(current_model,"confusion_matrix.png"))
         
@@ -102,7 +100,7 @@ def show_metrics():
         df = pd.read_csv(metrics_path)
         col1.write(df)
 
-        col2.write("### Current model metrics")
+        col2.write("### New model metrics")
         metrics_path = os.path.join(current_model,"metrics.csv")
         df = pd.read_csv(metrics_path)
         col2.write(df)
