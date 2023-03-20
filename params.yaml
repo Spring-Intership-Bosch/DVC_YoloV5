@@ -2,6 +2,9 @@ model: yolov5
 ingest:
   dcount: 0
   dpath: dataset2.zip
+split:
+  train: 0.9
+  val: 0.1
 class_id:
   person: 0
   person-like: 1

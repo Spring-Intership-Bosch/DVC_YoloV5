@@ -8,25 +8,25 @@ stages:
       size: 665
     params:
       params.yaml:
-        ingest.dcount: 2
+        ingest.dcount: 0
     outs:
     - path: data/prepared
-      md5: 2ef432e9550d604f192dc6e93e3124c0.dir
+      md5: b2550911b20d4b1df50ea15df8f28e4f.dir
       size: 141833186
       nfiles: 1888
   predict:
     cmd: python3 src/predict.py data/split data/predicted data/split
     deps:
     - path: data/split
-      md5: 8eda0bbc9dacf9d7f78c081c6b8a0680.dir
-      size: 200675915
+      md5: d9050e8e04500f43962c85e7815db750.dir
+      size: 200195468
       nfiles: 3304
     - path: src/predict.py
       md5: e3d8acdbdedc7ee26392d108b1f0b693
       size: 810
     params:
       params.yaml:
-        ingest.dcount: 2
+        ingest.dcount: 0
     outs:
     - path: data/predicted
       md5: d751713988987e9331980363e24189ce.dir
@@ -82,15 +82,15 @@ stages:
       size: 0
       nfiles: 0
     - path: data/split
-      md5: 8eda0bbc9dacf9d7f78c081c6b8a0680.dir
-      size: 200675915
+      md5: d9050e8e04500f43962c85e7815db750.dir
+      size: 200195468
       nfiles: 3304
     - path: src/train.py
       md5: da13701898f22dbd46463fbb215749c0
       size: 839
     params:
       params.yaml:
-        ingest.dcount: 2
+        ingest.dcount: 0
     outs:
     - path: data/trained
       md5: d751713988987e9331980363e24189ce.dir
@@ -100,15 +100,15 @@ stages:
     cmd: python3 src/split.py data/prepared data/split
     deps:
     - path: data/prepared
-      md5: 24ff39135e4b27000c625d688715df0b.dir
-      size: 824934
-      nfiles: 944
+      md5: 0e6c3b066ad1e3fe6c0ca94a56ac45ab.dir
+      size: 141886902
+      nfiles: 2832
     - path: src/split.py
-      md5: 25678e022b95efc9aca69859b8a377d6
-      size: 5959
+      md5: 66f3f74689f119bcee831df10fe141eb
+      size: 3756
     params:
       params.yaml:
-        ingest.dcount: 2
+        ingest.dcount: 0
     outs:
     - path: data/split
       md5: c6f3bb682585e8292624ce698f4bc495.dir
@@ -118,15 +118,15 @@ stages:
     cmd: python3 src/augment.py data/split data/augmented
     deps:
     - path: data/split
-      md5: 9e53156035b99ea9ceb26581ba467fc9.dir
-      size: 200194040
+      md5: 040ab9d7aa0f27b0f9af2c6d590d60b3.dir
+      size: 199713573
       nfiles: 3302
     - path: src/augment.py
       md5: 66485d9686ad35082b3e51dd6dd1603c
       size: 4768
     params:
       params.yaml:
-        ingest.dcount: 2
+        ingest.dcount: 0
     outs:
     - path: data/augmented
       md5: d751713988987e9331980363e24189ce.dir
@@ -148,9 +148,9 @@ stages:
       size: 2569
     params:
       params.yaml:
-        ingest.dcount: 2
-        yolov5.hyps.epochs: 5
-        yolov5.weights: runs/train/exp2/weights/best.pt
+        ingest.dcount: 0
+        yolov5.hyps.epochs: 1
+        yolov5.weights: runs/train/exp3/weights/best.pt
     outs:
     - path: data/compared
       md5: d751713988987e9331980363e24189ce.dir
