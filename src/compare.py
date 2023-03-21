@@ -38,14 +38,14 @@ def get_best_model(met_dir,flag):
 
 def compare_metrics(val_met,pred_met,met_dir):
     best_model_path = ''
-    val_mAP50 = val_met['mAP50'][0]
-    pred_mAP50 = pred_met['mAP50'][0]
-    val_mAP95 = val_met['mAP50-95'][0]
-    pred_mAP95 = pred_met['mAP50-95'][0]
+    val_F1 = val_met['F1-Score'][0]
+    pred_F1 = pred_met['F1-Score'][0]
+    # val_mAP95 = val_met['mAP50-95'][0]
+    # pred_mAP95 = pred_met['mAP50-95'][0]
     #False - Validated model is better
     #True - predicted model is better
     flag = False 
-    if val_mAP50 > pred_mAP50 and val_mAP95 > pred_mAP95 :
+    if val_F1 > pred_F1 :
         flag = False
         best_model_path = get_best_model(met_dir,flag)
     else:
@@ -58,7 +58,9 @@ def yolov5Model():
     val_dir = params['yolov5']['outputs']['val_dir']
     val_met = get_metrics(train_dir)
     pred_met = get_metrics(val_dir)
+    print("New Model")
     print(val_met)
+    print("Previous Best Model")
     print(pred_met)
     best_model = compare_metrics(val_met,pred_met,train_dir)
     print(best_model)
@@ -75,6 +77,6 @@ def main():
 if __name__ == "__main__":
     logger = logg.log("compare.py")
     params = yaml.safe_load(open('params.yaml'))
-    output = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images')
+    output = os.path.join(sys.argv[2],f"v{params['yolov5']['ingest']['dcount']}",'images')
     os.makedirs(output, exist_ok=True)
     main()

@@ -38,7 +38,7 @@ def move_files_to_folder(list_of_files, destination_folder):
 #
 #
 def class_id_mapping():
-    class_ids = params['class_id']
+    class_ids = params['yolov5']['class_id']
     name_to_id = {}
     for id in class_ids.keys():
         name_to_id[id] = class_ids[id]
@@ -46,10 +46,10 @@ def class_id_mapping():
 
 def convert_and_save_annotations(class_name_to_id_mapping):
     input_path = sys.argv[1]
-    annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations') )if x[-3:] == "xml"]
+    annotations = [os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'annotations') )if x[-3:] == "xml"]
     annotations.sort()
-    image_path = os.path.join(input_path,f"v{params['ingest']['dcount']}",'images')
-    annot_path = os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations')
+    image_path = os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'images')
+    annot_path = os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'annotations')
 
 # Convert and save the annotations
 #
@@ -60,8 +60,8 @@ def convert_and_save_annotations(class_name_to_id_mapping):
     return input_path
 
 def get_img_annots(input_path):
-    images = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'images', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'images'))]
-    annotations = [os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['ingest']['dcount']}",'annotations')) if x[-3:] == "txt"]
+    images = [os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'images', x) for x in os.listdir(os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'images'))]
+    annotations = [os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'annotations', x) for x in os.listdir(os.path.join(input_path,f"v{params['yolov5']['ingest']['dcount']}",'annotations')) if x[-3:] == "txt"]
     return images,annotations
 
 def split_and_save(t_img,t_annot,v_img,v_annot):

@@ -14,6 +14,8 @@ if len(sys.argv) != 4:
     sys.exit(1)
 
 def yolov5Model():
+    output = os.path.join(sys.argv[2],f"v{params['yolov5']['ingest']['dcount']}",'images')
+    os.makedirs(output, exist_ok=True)
     args = params['yolov5']['hyps']
     wt = params['yolov5']['weights']
     train.run(data='person.yaml', imgsz=320, weights=wt, **args)
@@ -27,6 +29,5 @@ def main():
 if __name__ == "__main__":
     logger = logg.log("train.py")
     params = yaml.safe_load(open('params.yaml'))
-    output = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images')
-    os.makedirs(output, exist_ok=True)
+   
     main()

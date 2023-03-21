@@ -128,7 +128,7 @@ def main():
 if __name__ == "__main__":
     logger = logg.log("augment.py")
     params = yaml.safe_load(open('params.yaml'))
-    outputaug = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}")
+    outputaug = os.path.join(sys.argv[2],f"v{params['yolov5']['ingest']['dcount']}")
     os.makedirs(outputaug, exist_ok = True)
     output_image_path = os.path.join(outputaug,'images')
     output_annot_path = os.path.join(outputaug,'labels')

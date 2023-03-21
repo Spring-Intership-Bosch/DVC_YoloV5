@@ -1,19 +1,19 @@
 model: yolov5
-ingest:
-  dcount: 0
-  dpath: dataset2.zip
 split:
   train: 0.9
   val: 0.1
-class_id:
-  person: 0
-  person-like: 1
 yolov5:
+  ingest:
+    dcount: 0
+    dpath: dataset1.zip
   weights: pretrained/best.pt
+  class_id:
+    person: 0
+    person-like: 1
   hyps:
-    epochs: 1
+    epochs: 5
     batch: 16
     optimizer: Adam
   outputs:
-    train_dir: runs/train/
-    val_dir: runs/val/
+    train_dir: runs/yolov5/train/
+    val_dir: runs/yolov5/val/

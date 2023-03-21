@@ -4,7 +4,7 @@ stages:
     deps:
     - src/ingest.py
     params:
-    - ingest.dcount
+    - yolov5.ingest.dcount
     outs:
     - data/prepared
   
@@ -14,7 +14,7 @@ stages:
     - src/split.py
     - data/prepared
     params:
-    - ingest.dcount
+    - yolov5.ingest.dcount
     outs:
     - data/split
   
@@ -24,7 +24,7 @@ stages:
     - src/augment.py
     - data/split
     params:
-    - ingest.dcount
+    - yolov5.ingest.dcount
     outs:
     - data/augmented
   
@@ -35,7 +35,7 @@ stages:
     - data/split
     - data/augmented
     params:
-    - ingest.dcount
+    - yolov5.ingest.dcount
     outs:
     - data/trained
   
@@ -45,7 +45,7 @@ stages:
     - src/predict.py
     - data/split
     params:
-    - ingest.dcount
+    - yolov5.ingest.dcount
     outs:
     - data/predicted
   
@@ -56,7 +56,7 @@ stages:
     - data/predicted
     - data/trained
     params:
-    - ingest.dcount
+    - yolov5.ingest.dcount
     - yolov5.weights
     - yolov5.hyps.epochs
     outs:

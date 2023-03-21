@@ -17,8 +17,8 @@ def runPipeline(newFiles: list):
     print(f'Running Pipeline with {newFiles[0]}')
 
     params = yaml.safe_load(open('params.yaml'))
-    params['ingest']['dcount'] = params['ingest']['dcount'] + 1
-    params['ingest']['dpath'] = newFiles[0]
+    params['yolov5']['ingest']['dcount'] = params['yolov5']['ingest']['dcount'] + 1
+    params['yolov5']['ingest']['dpath'] = newFiles[0]
     yaml.dump(params, open('params.yaml', 'w'), sort_keys=False)
 
     if not os.system("dvc repro"):

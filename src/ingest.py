@@ -4,7 +4,7 @@ import zipfile
 import sys
 import extras.logger as logg
 
-params = yaml.safe_load(open('params.yaml'))['ingest']
+params = yaml.safe_load(open('params.yaml'))['yolov5']['ingest']
 data_path = os.path.join('data', 'prepared', f"v{params['dcount']}")
 origimg_path = os.path.join('data', 'store', f"v{params['dcount']}")
 datasets_path = os.path.join('datasets', f"v{params['dcount']}")

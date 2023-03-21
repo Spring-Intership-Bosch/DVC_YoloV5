@@ -14,7 +14,9 @@ if len(sys.argv) != 4:
     sys.exit(1)
 
 def yolov5Model():
-    val.run(data='model/yolov5/data/person.yaml', weights=params['yolov5']['weights'], project='runs/val')
+    output = os.path.join(sys.argv[2],f"v{params['yolov5']['ingest']['dcount']}",'images')
+    os.makedirs(output, exist_ok=True)
+    val.run(data='model/yolov5/data/person.yaml', weights=params['yolov5']['weights'], project='runs/yolov5/val')
 
 def main():
     logger.info('INFERING')
@@ -25,6 +27,5 @@ def main():
 if __name__ == "__main__":
     logger = logg.log("predict.py")
     params = yaml.safe_load(open('params.yaml'))
-    output = os.path.join(sys.argv[2],f"v{params['ingest']['dcount']}",'images')
-    os.makedirs(output, exist_ok=True)
+    
     main()

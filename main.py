@@ -18,8 +18,8 @@ def pipeline():
         st.subheader('Running YoloV5 Pipeline..........')
         shutil.rmtree('.dvc/cache', ignore_errors=True) 
         
-        params['ingest']['dcount'] = params['ingest']['dcount'] +1
-        params['ingest']['dpath'] = option
+        params["yolov5"]['ingest']['dcount'] = params["yolov5"]['ingest']['dcount'] +1
+        params["yolov5"]['ingest']['dpath'] = option
         yaml.dump(params, open('params.yaml', 'w'), sort_keys=False)
         
         if not os.system("dvc repro"):
@@ -31,39 +31,39 @@ def pipeline():
 
 
 def show_metrics():
-    dcou = params['ingest']['dcount']
+    dcou = params["yolov5"]['ingest']['dcount']
     if dcou != 0:
         if params["yolov5"]["weights"] == "pretrained/best.pt":
             bbb = 1
         else:
-            if params["yolov5"]["weights"].split("/")[2] == 'exp':
+            if params["yolov5"]["weights"].split("/")[3] == 'exp':
                 bbb=1
             else:
-                bbb = params["yolov5"]["weights"].split("/")[2]
+                bbb = params["yolov5"]["weights"].split("/")[3]
                 bbb = bbb[-1]
 
         if int(bbb) == int(dcou):
             if bbb == 1:
                 # st.write('current model is  runs/val/exp')
                 # st.write('prev model is  runs/train/exp')
-                prev_best_model = 'runs/train/exp'
-                current_model = 'runs/val/exp'
+                prev_best_model = 'runs/yolov5/train/exp'
+                current_model = 'runs/yolov5/val/exp'
             else:
                 # st.write('current model is  runs/val/exp'+str(dcou))
                 # st.write('prev model is  runs/train/exp'+str(dcou))
-                prev_best_model = 'runs/train/exp'+str(dcou)
-                current_model = 'runs/val/exp'+str(dcou)
+                prev_best_model = 'runs/yolov5/train/exp'+str(dcou)
+                current_model = 'runs/yolov5/val/exp'+str(dcou)
         else:
             if bbb == 1:
                 # st.write('current model is  runs/train/exp'+str(dcou))
                 # st.write('prev model is  runs/val/exp'+str(dcou))
-                prev_best_model = 'runs/val/exp'
-                current_model = 'runs/train/exp'
+                prev_best_model = 'runs/yolov5/val/exp'
+                current_model = 'runs/yolov5/train/exp'
             else:
                 # st.write('current model is  runs/train/exp'+str(dcou))
                 # st.write('prev model is  runs/val/exp'+str(dcou))
-                prev_best_model = 'runs/val/exp'+str(dcou)
-                current_model = 'runs/train/exp'+str(dcou)
+                prev_best_model = 'runs/yolov5/val/exp'+str(dcou)
+                current_model = 'runs/yolov5/train/exp'+str(dcou)
         
         df1 = pd.read_csv(current_model+'/metrics.csv')
         df2 = pd.read_csv(prev_best_model+'/metrics.csv')
@@ -121,7 +121,7 @@ def predict_image():
         st.image('detect/image.png')
         detect.run(weights=params['yolov5']['weights'], source='detect/image.png')
         st.success('Prediction Successful')
-        st.image('runs/detect/exp/image.png')
+        st.image('runs/yolov5/detect/exp/image.png')
 
 def main():
     st.set_page_config(layout="wide")
