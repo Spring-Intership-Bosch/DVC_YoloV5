@@ -50,6 +50,7 @@ def extract_info_from_xml(xml_file):
             info_dict['bboxes'].append(bbox)
     return info_dict
 
+<<<<<<< Updated upstream
 # Convert the info dict to the required yolo format and write it to disk
 def convert_to_yolov5(info_dict,annot_path,class_name_to_id_mapping):
     print_buffer = []
@@ -79,6 +80,8 @@ def convert_to_yolov5(info_dict,annot_path,class_name_to_id_mapping):
     # Save the annotation to disk
     print("\n".join(print_buffer), file= open(save_file_name, "w"))
 
+=======
+>>>>>>> Stashed changes
 def move_files_to_folder(list_of_files, destination_folder):
     for f in list_of_files:
         try:
